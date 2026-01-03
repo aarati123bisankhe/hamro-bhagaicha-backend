@@ -1,0 +1,41 @@
+import { Request, Response }  from "express";
+import { Book } from "../types/book.type";
+import { CreateBookDto } from "../dtos/book.dto";
+import { books } from "../repositories/book.repository";
+import { BookService } from "../services/book.service";
+
+
+//comment after using zod
+// export type Book = {
+//     id: string;
+//     title: string;
+//     date?: string;
+// }
+let bookService: BookService = new BookService();
+
+
+export class BookController{
+    createBook = (req: Request, res: Response) => {
+        try{
+            const validation = CreateBookDto.safeParse(req.body);
+        if(!validation.success){
+            
+            return res.status(400).json({errors: validation.error});
+        }
+        
+        const {id,title} = validation.data;
+        const newBook: Book = bookService.createBook({id,title});
+        return res.status(201).json(newBook);
+        }catch(error){
+            return res.status(409).json({message:(error as Error).message});
+        } 
+    }
+    getBooks = (req: Request, res: Response) => {
+        // const books = [
+        //     {id:"B-1", title:'1984'},
+        //     {id:"B-2", title:'The Great Gatsby', date:"2024-01-01"}
+        // ];
+        const return_book: Book[] = bookService.getAllBooks();
+        return res.status(200).json(return_book);
+    }
+}
