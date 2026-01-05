@@ -12,13 +12,12 @@ const userMongoSchema: Schema = new Schema(
         role: {type: String, enum: ["user","admin"], default:"user"},
     },
     {
-        timestamps: true, // auto field- createdAt, updatedAt
+        timestamps: true,
     }
 )
-export interface IUser extends UserType, Document {//combined type
-    _id: mongoose.Types.ObjectId; // extra mongo attribute
+export interface IUser extends UserType, Document {
+    _id: mongoose.Types.ObjectId;
     createdAt: Date;
     updatedAt: Date;
 }
 export const UserModel = mongoose.model<IUser>("User",userMongoSchema);
-//UserModel -> db.users

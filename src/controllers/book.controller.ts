@@ -4,13 +4,6 @@ import { CreateBookDto } from "../dtos/book.dto";
 import { books } from "../repositories/book.repository";
 import { BookService } from "../services/book.service";
 
-
-//comment after using zod
-// export type Book = {
-//     id: string;
-//     title: string;
-//     date?: string;
-// }
 let bookService: BookService = new BookService();
 
 
