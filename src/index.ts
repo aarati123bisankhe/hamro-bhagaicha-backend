@@ -12,6 +12,8 @@ console.log(process.env.PORT);
 import authRoutes from './routes/auth.route';
 import bookRoute from './routes/book.route';
 import adminUserRoutes from './routes/admin/user.route';
+// import adminAuthRoutes from "./routes/admin/auth.route";
+
 
 const app:Application = express();
 const port = 3000;
@@ -20,6 +22,9 @@ const port = 3000;
 app.use(bodyParser.json());
 
 app.use("/api/auth", authRoutes)
+
+// app.use("/api/auth/admin", adminAuthRoutes);
+
 
 app.use("/api/book", bookRoute)
 
