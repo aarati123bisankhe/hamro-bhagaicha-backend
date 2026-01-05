@@ -24,10 +24,6 @@ export class BookController{
         } 
     }
     getBooks = (req: Request, res: Response) => {
-        // const books = [
-        //     {id:"B-1", title:'1984'},
-        //     {id:"B-2", title:'The Great Gatsby', date:"2024-01-01"}
-        // ];
         const return_book: Book[] = bookService.getAllBooks();
         return res.status(200).json(return_book);
     }

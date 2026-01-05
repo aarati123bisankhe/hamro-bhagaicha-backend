@@ -20,7 +20,6 @@ export class AdminUserController {
             message: error.message
         });
     }
-        //similar to registser user
     }
     async getOneUser(req: Request, res:Response){
         try{

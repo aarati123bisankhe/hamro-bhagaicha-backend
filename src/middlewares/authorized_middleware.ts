@@ -11,7 +11,7 @@ declare global{
             user?: Record<string, any> | IUser
         }
     }
-} // adding tag (user) to request, can use req.user
+} 
 let userRepository = new UserRepository();
 
 export const authorizedMiddleware = 
@@ -36,18 +36,12 @@ export const authorizedMiddleware =
                 { success: false, message: err.message }
             )
         }
-    // if(req.headers && req.headers.authorization){
-    //     return next();
-    // }
-    // return res.status(401).json({ success: false, message: 'Unauthorized' });
 }
 
 export const adminMiddleware = async (
     req: Request, res: Response, next: NextFunction
 ) => {  
     try{
-        // req.user is added by authorizedMiddleware
-        // any function after authorizedMiddleware can use req.user
         if(!req.user){
             throw new HttpError(401, 'Unauthorized no user info');
         }

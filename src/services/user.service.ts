@@ -30,8 +30,6 @@ export class UserService{
         throw new HttpError(404, "user not found");
     }
     const validPassword = await bcryptjs.compare(loginData.password, user.password);
-    //compare plain password wth hashed password
-    // not loginData.password (clinet) == usre.password (dataabase)
     if(!validPassword){
         throw new HttpError(401, "invalid credentials")
     }

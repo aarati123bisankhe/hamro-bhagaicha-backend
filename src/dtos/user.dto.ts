@@ -4,7 +4,6 @@ import { UserSchema } from "../types/user.type";
 export const CreateUserDto = UserSchema.pick(
     {
         firstName: true,
-        // lastName: true,
         username: true,
         email: true,
         password: true
@@ -21,16 +20,14 @@ export const CreateUserDto = UserSchema.pick(
 (data) => data.password === data.confirmPassword,
 {
     message: "password do not match",
-    path: ["confirm password"] //set the path of the error to "confirm password"
+    path: ["confirm password"]
 }
 )
 export type CreateUserDto = z.infer<typeof CreateUserDto>;
 
-//export const updateUserDto = userscheme.partial(). //all optional fields
 export const updateUserDto = UserSchema.pick(
     {
         firstName: true,
-        // lastName: true,
         username: true,
         email: true
     }

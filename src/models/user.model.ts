@@ -5,7 +5,6 @@ import { required } from "zod/v4/core/util.cjs";
 const userMongoSchema: Schema = new Schema(
     {
         firtName: {type:String, required:false},
-        // lastName: {type:String}, // default is optional
         email: {type: String, required: true, unique: true},
         username: {type: String, required: true, unique: true},
         password: {type: String, required: true},

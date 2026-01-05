@@ -16,10 +16,6 @@ router.get(
     }
 )
 
-//5 common api endpoints
 router.post("/", adminUserController.createUser);
 router.get("/:id", adminUserController.getOneUser);
-//router.get("/:id", adminUserController.getAllUser);
-//router.put("/:id", adminUserController.updateUser);
-//router.delete("/:id", adminUserController.deleteUser);
 export default router;
