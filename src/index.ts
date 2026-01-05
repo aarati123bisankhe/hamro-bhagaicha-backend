@@ -28,7 +28,7 @@ app.use("/api/auth", authRoutes)
 
 app.use("/api/book", bookRoute)
 
-app.use('api/books',bookRoutes);
+app.use('/api/books',bookRoutes);
 
 app.use('/api/admin/users', adminUserRoutes)
 

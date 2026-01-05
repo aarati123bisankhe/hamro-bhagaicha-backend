@@ -23,4 +23,3 @@ router.get("/:id", adminUserController.getOneUser);
 //router.put("/:id", adminUserController.updateUser);
 //router.delete("/:id", adminUserController.deleteUser);
 export default router;
-

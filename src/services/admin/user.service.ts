@@ -5,6 +5,22 @@ import { HttpError } from "../../errors/http-error";
 let userRepository = new UserRepository();
 export class AdminUserService {
     async createUser(userData: CreateUserDto){
+        // Check if user/email exists
+    const existingUser = await userRepository.getUserByEmail(userData.email);
+    if (existingUser) {
+        throw new HttpError(400, "Email already exists");
+    }
+
+    // Hash password
+    const hashedPassword = await bcryptjs.hash(userData.password, 10);
+
+    const newUser = await userRepository.createUser({
+        ...userData,
+        password: hashedPassword,
+        role: "admin", // make this user an admin
+    });
+
+    return newUser;
         //sams as registeruser
     }
     async getOneUser(userId: string){
