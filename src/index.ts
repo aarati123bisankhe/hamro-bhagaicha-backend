@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import bookRoutes from './routes/book.route';
 import {PORT} from './configs';
 import {connectDb} from './database/mangodb';
+import cors from 'cors';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -15,6 +16,14 @@ import adminUserRoutes from './routes/admin/user.route';
 
 
 const app:Application = express();
+
+let corsOptions = {
+    origin: ["http://localhost:3000"]
+}
+
+app.use(cors(corsOptions))
+
+
 const port = 3000;
 
 
