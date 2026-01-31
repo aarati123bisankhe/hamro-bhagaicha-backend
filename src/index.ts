@@ -1,6 +1,5 @@
 import express, { Application,Request, Response } from 'express';
 import bodyParser from 'body-parser';
-import bookRoutes from './routes/book.route';
 import {PORT} from './configs';
 import {connectDb} from './database/mangodb';
 import cors from 'cors';
@@ -11,15 +10,16 @@ dotenv.config();
 console.log(process.env.PORT);
 // ENV -> PORT=5055
 import authRoutes from './routes/auth.route';
-import bookRoute from './routes/book.route';
 import adminUserRoutes from './routes/admin/user.route';
-
+import path from 'path';
 
 const app:Application = express();
 
 let corsOptions = {
     origin: ["http://localhost:3000"]
 }
+
+app.use("/uploads",express.static(path.join(__dirname,'../uploads')));
 
 app.use(cors(corsOptions))
 
@@ -31,9 +31,6 @@ app.use(bodyParser.json());
 
 app.use("/api/auth", authRoutes)
 
-app.use("/api/book", bookRoute)
-
-app.use('/api/books',bookRoutes);
 
 app.use('/api/admin/users', adminUserRoutes)
 
