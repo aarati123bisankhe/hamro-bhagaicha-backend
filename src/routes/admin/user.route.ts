@@ -1,21 +1,60 @@
+// import { Router } from "express";
+// import { AdminUserController} from "../../controllers/admin/user.controller";
+// import { authorizedMiddleware, adminMiddleware } from "../../middlewares/authorized_middleware";
+// import { Request, Response } from "express";
+// import { success } from "zod";
+
+// let adminUserController = new AdminUserController();
+// const router = Router();
+
+// //test routes
+// router.get(
+//     "/test",
+//     authorizedMiddleware, adminMiddleware,
+//     (req: Request, res:Response) => {
+//         res.status(200).json({success: true, message: "welcome to admin"});
+//     }
+// )
+
+// router.post("/", adminUserController.createUser);
+// router.get("/:id", adminUserController.getOneUser);
+// export default router;
+
+
 import { Router } from "express";
-import { AdminUserController} from "../../controllers/admin/user.controller";
-import { authorizedMiddleware, adminMiddleware } from "../../middlewares/authorized_middleware";
-import { Request, Response } from "express";
-import { success } from "zod";
+import { AdminUserController } from "../../controllers/admin/user.controller";
+import { adminMiddleware, authorizedMiddleware } from "../../middlewares/authorized_middleware";
+import { uploads } from "../../middlewares/upload_middleware";  // adjust path if needed
 
-let adminUserController = new AdminUserController();
 const router = Router();
+const adminUserController = new AdminUserController();
 
-//test routes
-router.get(
-    "/test",
-    authorizedMiddleware, adminMiddleware,
-    (req: Request, res:Response) => {
-        res.status(200).json({success: true, message: "welcome to admin"});
-    }
-)
+router.use(authorizedMiddleware);
+router.use(adminMiddleware);
+
+
+router.get("/test", (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "Welcome to admin"
+    });
+});
+
+
 
 router.post("/", adminUserController.createUser);
-router.get("/:id", adminUserController.getOneUser);
+
+router.get("/", adminUserController.getAllUser);
+
+router.get("/:id", adminUserController.getUserById);
+
+router.put("/:id",
+    uploads.fields([
+        { name: "profileUrl", maxCount: 1 },
+    ]),
+    adminUserController.updateUser
+);
+
+router.delete("/:id", adminUserController.deleteUser);
+
 export default router;

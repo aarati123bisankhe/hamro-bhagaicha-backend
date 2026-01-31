@@ -53,6 +53,7 @@ import { UserModel, IUser } from "../models/user.model";
 
 export interface IUserRepository {
   getUserByEmail(email: string): Promise<IUser | null>;
+  //  getUserByUsername(username: string): Promise<IUser | null>;
 
   // Common database methods
   createUser(userData: Partial<IUser>): Promise<IUser>;
@@ -81,6 +82,11 @@ export class UserRepository implements IUserRepository {
   async getAllUsers(): Promise<IUser[]> {
     return await UserModel.find();
   }
+
+  //  async getUserByUsername(username: string): Promise<IUser | null> {
+  //       const user = await UserModel.findOne({"username": username});
+  //       return user;
+  //   }
 
   async updateUser(
     userId: string,

@@ -5,11 +5,13 @@ import {connectDb} from './database/mangodb';
 import cors from 'cors';
 
 import dotenv from 'dotenv';
-dotenv.config();
-console.log(process.env.PORT);
+
 import authRoutes from './routes/auth.route';
 import adminUserRoutes from './routes/admin/user.route';
 import path from 'path';
+
+dotenv.config();
+console.log(process.env.PORT);
 
 const app:Application = express();
 
@@ -20,6 +22,7 @@ let corsOptions = {
 app.use("/uploads",express.static(path.join(__dirname,'../uploads')));
 
 app.use(cors(corsOptions))
+
 
 
 const port = 3000;
