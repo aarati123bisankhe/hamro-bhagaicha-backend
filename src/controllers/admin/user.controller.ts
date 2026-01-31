@@ -23,7 +23,7 @@ export class AdminUserController {
     }
     async getOneUser(req: Request, res:Response){
         try{
-            const userId = req.params.id; //eg: /api/admin/users/:id
+            const userId = req.params.id;
             const user = await adminuserService.getOneUser(userId);
             return res.status(200).json(
                 {success: true, data: user, message: "user fetvhed"}
@@ -34,5 +34,4 @@ export class AdminUserController {
             )
         }
     }
-    // continue to other
 }

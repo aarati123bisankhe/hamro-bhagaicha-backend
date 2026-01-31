@@ -6,9 +6,7 @@ import cors from 'cors';
 
 import dotenv from 'dotenv';
 dotenv.config();
-//can use .env variable after this
 console.log(process.env.PORT);
-// ENV -> PORT=5055
 import authRoutes from './routes/auth.route';
 import adminUserRoutes from './routes/admin/user.route';
 import path from 'path';
