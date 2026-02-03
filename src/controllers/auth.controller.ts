@@ -76,19 +76,12 @@ export class AuthController{
                     { success: false, message: z.prettifyError(parsedData.error) }
                 )
             }
-            // if(req.file){ 
-            //     parsedData.data.profileUrl = `/uploads/${req.file.filename}`;
-            //     parsedData.data.coverUrl = `/uploads/${req.file.filename}`;
-            // }
             const files = req.files as any;
 
             if (files?.profileUrl?.[0]) {
                 parsedData.data.profileUrl = files.profileUrl[0].filename;
             }
 
-            // if (files?.coverUrl?.[0]) {
-            //     parsedData.data.coverUrl = `/uploads/${files.coverUrl[0].filename}`;
-            // }
             const updatedUser = await userService.updateUser(userId, parsedData.data);
 
             if(!updatedUser){
@@ -105,6 +98,22 @@ export class AuthController{
                 { success: true, message: "User updated successfully", data: userObj }
             )
         }catch (error: Error | any) {
+            return res.status(error.statusCode || 500).json(
+                { success: false, message: error.message || "Internal Server Error" }
+            )
+        }
+    }
+
+    async requestPasswordChange(req: Request, res: Response) {
+        try {
+            const { email } = req.body;
+            const user = await userService.sendResetPasswordEmail(email);
+            return res.status(200).json(
+                { success: true, 
+                    data: user,
+                    message: "Password reset email sent" }
+            )
+        } catch (error: Error | any) {
             return res.status(error.statusCode || 500).json(
                 { success: false, message: error.message || "Internal Server Error" }
             )
