@@ -12,7 +12,7 @@ describe("ADMIN CONTROLLER - Integration Tests", () => {
   const adminEmail = `admintest_${timestamp}@test.com`;
   const adminUsername = `admintest_${timestamp}`;
 
-  // ================= SETUP =================
+  //setup
   beforeAll(async () => {
 
     await UserModel.deleteMany({
@@ -21,7 +21,7 @@ describe("ADMIN CONTROLLER - Integration Tests", () => {
 
     const hashedPassword = await bcrypt.hash("password123", 10);
 
-    // Create Admin
+    //create admin
     await UserModel.create({
       fullname: "Admin",
       email: adminEmail,
@@ -29,7 +29,7 @@ describe("ADMIN CONTROLLER - Integration Tests", () => {
       role: "admin",
     });
 
-    // Login Admin
+    //login admin
     const login = await request(app)
       .post("/api/auth/login")
       .send({
@@ -48,7 +48,7 @@ describe("ADMIN CONTROLLER - Integration Tests", () => {
     await UserModel.deleteMany({ email: /test\.com$/ });
   });
 
-  // ================= ADMIN ACCESS =================
+  //admin access
   describe("Admin Access", () => {
 
     test("16. Admin route should work", async () => {
@@ -94,7 +94,7 @@ describe("ADMIN CONTROLLER - Integration Tests", () => {
 
   });
 
-  // ================= USER MANAGEMENT =================
+  //user management
   describe("User Management (Admin)", () => {
 
     test("17. Admin create user", async () => {
@@ -157,7 +157,7 @@ describe("ADMIN CONTROLLER - Integration Tests", () => {
 
   });
 
-  // ================= PAGINATION =================
+  //pagination
   describe("Pagination", () => {
 
     test("24. Admin pagination test", async () => {
