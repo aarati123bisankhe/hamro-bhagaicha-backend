@@ -62,7 +62,7 @@ describe("Authentication Integration Tests", () => {
     let token: string;
     let userId: string;
 
-    // ================= SETUP =================
+    //setup
     beforeAll(async () => {
         await UserModel.deleteMany({ email: testUser.email });
     });
@@ -71,7 +71,7 @@ describe("Authentication Integration Tests", () => {
         await UserModel.deleteMany({ email: testUser.email });
     });
 
-    // ================= REGISTER =================
+    //register
     describe("POST /api/auth/register", () => {
 
         test("1. should register a new user", async () => {
@@ -105,7 +105,7 @@ describe("Authentication Integration Tests", () => {
         });
     });
 
-    // ================= LOGIN =================
+    //login
     describe("POST /api/auth/login", () => {
 
         test("4. should login successfully", async () => {
@@ -142,7 +142,7 @@ describe("Authentication Integration Tests", () => {
         });
     });
 
-    // ================= WHOAMI =================
+    //whoami
     describe("GET /api/auth/whoami", () => {
 
         test("7. should fail without token", async () => {
@@ -162,7 +162,7 @@ describe("Authentication Integration Tests", () => {
         });
     });
 
-    // ================= UPDATE PROFILE =================
+    // updateprofile
     describe("PUT /api/auth/update-profile", () => {
 
         test("9. should fail without token", async () => {
@@ -183,7 +183,7 @@ describe("Authentication Integration Tests", () => {
         });
     });
 
-    // ================= PASSWORD RESET =================
+    //password reset
     describe("Password Reset Flow", () => {
 
         test("11. should send reset password email", async () => {
