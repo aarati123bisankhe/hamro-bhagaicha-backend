@@ -5,33 +5,13 @@ export const CreateUserDto = UserSchema.pick(
     {
         fullname: true,
         email: true,
-        password: true
-    }
-
-).extend(
-    {
-        address: z.string().min(3, "Address is required"),
-        phoneNumber: z.string().min(10, "Phone number is required"),
-        
-    }
-);
-export type CreateUserDto = z.infer<typeof CreateUserDto>;
-
-export const updateUserDto = UserSchema.pick(
-    {
-        fullname: true,
-        email: true
+        password: true,
+        address:true,
+        phoneNumber: true
     }
 
 )
-
-.extend({
-    address: z.string().min(3).optional(),
-    phoneNumber: z.string().min(10).optional(),
-  });
-
-export type updateUserDto = z.infer<typeof updateUserDto>;
-
+export type CreateUserDto = z.infer<typeof CreateUserDto>;
 
 export const LoginUserDto = z.object({
     email: z.email(),
