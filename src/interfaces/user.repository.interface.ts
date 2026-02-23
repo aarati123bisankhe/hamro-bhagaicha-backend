@@ -1,6 +1,6 @@
-import { UserDocument, User } from "../types/user.type"; 
+import { UserType } from "../types/user.type"; 
 
 export interface UserRepositoryInterface{
-    createUser(user:User) : Promise<UserDocument>;
-    getUsers(): Promise<UserDocument[]>;
+    createUser(user: UserType) : Promise<UserType>;
+    getUsers(): Promise<UserType[]>;
 }

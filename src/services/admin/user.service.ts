@@ -60,7 +60,7 @@
 
 import { CreateUserDto, UpdateUserDto } from "../../dtos/user.dto";
 import { HttpError } from "../../errors/http-error";
-import { UserRepository } from "../../repositories/user.repository";
+import { PaginatedUsersResponse, UserRepository } from "../../repositories/user.repository";
 import bcryptjs from "bcryptjs";
 
 let userRepository = new UserRepository();
@@ -110,8 +110,8 @@ export class AdminUserService{
         return updatedUser;
     }
 
-    async getAllUsers(){
-        const users = await userRepository.getAllUsers();
+    async getAllUsers(page: number, size: number): Promise<PaginatedUsersResponse>{
+        const users = await userRepository.getAllUsers(page, size);
         return users;
     }
 }

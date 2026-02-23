@@ -51,6 +51,20 @@
 
 import { UserModel, IUser } from "../models/user.model";
 
+export interface UsersPaginationMeta {
+  page: number;
+  size: number;
+  total: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
+export interface PaginatedUsersResponse {
+  users: IUser[];
+  pagination: UsersPaginationMeta;
+}
+
 export interface IUserRepository {
   getUserByEmail(email: string): Promise<IUser | null>;
   //  getUserByUsername(username: string): Promise<IUser | null>;
@@ -58,7 +72,7 @@ export interface IUserRepository {
   // Common database methods
   createUser(userData: Partial<IUser>): Promise<IUser>;
   getUserById(userId: string): Promise<IUser | null>;
-  getAllUsers(): Promise<IUser[]>;
+  getAllUsers(page: number, size: number): Promise<PaginatedUsersResponse>;
   updateUser(userId: string, updateData: Partial<IUser>): Promise<IUser | null>;
   deleteUser(userId: string): Promise<boolean>;
 }
@@ -79,8 +93,25 @@ export class UserRepository implements IUserRepository {
     return await UserModel.findById(userId);
   }
 
-  async getAllUsers(): Promise<IUser[]> {
-    return await UserModel.find();
+  async getAllUsers(page: number, size: number): Promise<PaginatedUsersResponse> {
+    const skip = (page - 1) * size;
+    const [users, total] = await Promise.all([
+      UserModel.find().sort({ createdAt: -1 }).skip(skip).limit(size),
+      UserModel.countDocuments(),
+    ]);
+
+    const totalPages = Math.ceil(total / size) || 1;
+    return {
+      users,
+      pagination: {
+        page,
+        size,
+        total,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+    };
   }
 
   //  async getUserByUsername(username: string): Promise<IUser | null> {

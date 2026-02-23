@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { text } from 'stream/consumers';
 const EMAIL_PASS=process.env.EMAIL_PASS as string;
 const EMAIL_USER=process.env.EMAIL_USER as string;
 
@@ -10,12 +11,13 @@ export const transporter = nodemailer.createTransport({
     },
 });
 
-export const sendEmail = async (to: string, subject: string, html: string) => {
+export const sendEmail = async (to: string, subject: string, html: string,text?: string) => {
     const mailOptions = {
-        from: `Mero app <${EMAIL_USER}>`,
+        from: `HamroBagaicha <${EMAIL_USER}>`,
         to,
         subject,
         html,
+        text,
     };
     await transporter.sendMail(mailOptions);
 }

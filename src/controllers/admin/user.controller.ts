@@ -41,6 +41,7 @@ import { NextFunction, Request, Response } from "express";
 import z, { success } from "zod";
 import { CreateUserDto,UpdateUserDto } from "../../dtos/user.dto";
 import { AdminUserService } from "../../services/admin/user.service";
+import { QueryParams } from "../../types/query.type";
 
 let adminUserService = new AdminUserService();
 export class AdminUserController{
@@ -80,9 +81,22 @@ export class AdminUserController{
 
     async getAllUser(req:Request, res:Response){
         try{
-            const users = await adminUserService.getAllUsers();
+            const { page, size } = req.query as QueryParams;
+
+            const parsedPage = Number(page) || 1;
+            const parsedSize = Number(size) || 10;
+
+            const safePage = Math.max(1, parsedPage);
+            const safeSize = Math.min(100, Math.max(1, parsedSize));
+
+            const users = await adminUserService.getAllUsers(safePage, safeSize);
             return res.status(200).json(
-                {success: true,data: users, message: "All users Retrieved"}
+                {
+                    success: true,
+                    data: users.users,
+                    pagination: users.pagination,
+                    message: "All users Retrieved"
+                }
             );
         }catch(error: Error | any){
             return res.status(error.statusCode ?? 500).json(

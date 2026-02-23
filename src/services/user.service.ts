@@ -88,20 +88,69 @@ async updateUser(userId: string,
 
     
 
-    async sendResetPasswordEmail(email?: string) {
-        const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
-        if (!email) {
-            throw new HttpError(400, "Email is required");
-        }
+    async sendResetPasswordEmail(
+      email?: string,
+      platform: "web" | "mobile" = "web",
+      resetUrl?: string
+    ) {
+        if (!email) throw new HttpError(400, "Email is required");
+
         const user = await userRepository.getUserByEmail(email);
-        if (!user) {
-            throw new HttpError(404, "User not found");
+        if (!user) throw new HttpError(404, "User not found");
+
+        // Generate JWT token valid for 1 hour
+        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
+
+        let resetBaseUrl: string;
+
+        if (platform === "mobile") {
+            // For Flutter/app links, allow explicit resetUrl from client first.
+            resetBaseUrl =
+            resetUrl ||
+            process.env.MOBILE_RESET_URL ||
+            `${process.env.CLIENT_URL || "http://localhost:3000"}/reset-password`;
+        } else {
+            // Web link stays the same
+            const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
+            resetBaseUrl = `${CLIENT_URL}/reset-password`;
         }
-        const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' }); // 1 hour expiry
-        const resetLink = `${CLIENT_URL}/reset-password?token=${token}`;
-        const html = `<p>Click <a href="${resetLink}">here</a> to reset your password. This link will expire in 1 hour.</p>`;
-        await sendEmail(user.email, "Password Reset", html);
+
+        const separator = resetBaseUrl.includes("?") ? "&" : "?";
+        const resetLink = `${resetBaseUrl}${separator}token=${encodeURIComponent(token)}`;
+
+        const html = `
+            <p>Click "<a href="${resetLink}">${resetLink}</a>" to reset your password.</p>
+            <p>If your app or email client does not open links, copy the link and paste it into your browser URL.</p>
+            <p>This link will expire in 1 hour.</p>
+        `;
+
+        const text = `Reset your password using this link (expires in 1 hour): ${resetLink}
+                        If the link does not open, copy and paste it into your browser URL.`;
+
+        await sendEmail(user.email, "Password Reset", html, text);
         return user;
     }
+
+
+  /**
+   * Reset user password
+   */
+  async resetPassword(token?: string, newPassword?: string) {
+    if (!token || !newPassword) throw new HttpError(400, "Token and new password are required");
+
+    try {
+      const decoded: any = jwt.verify(token, JWT_SECRET);
+      const userId = decoded.id;
+      const user = await userRepository.getUserById(userId);
+      if (!user) throw new HttpError(404, "User not found");
+
+      const hashedPassword = await bcryptjs.hash(newPassword, 10);
+      await userRepository.updateUser(userId, { password: hashedPassword });
+
+      return user;
+    } catch (err) {
+      throw new HttpError(400, "Invalid or expired token");
+    }
+  }
 }
 
