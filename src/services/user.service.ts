@@ -19,11 +19,6 @@ export class UserService{
         if(checkEmail){
             throw new HttpError(409, "email already in use");
         }
-        // const checkUsername = await userRepository.getUserByUsername(userData.email); 
-        // if(checkUsername){
-        //     throw new HttpError(403, "username alreadyyis used");
-        // }
-        //donot store plain password - hasg/encrypt for securoty
         const hashedPassword = await bcryptjs.hash(userData.password, 10);
         userData.password = hashedPassword; //replace with hased password
         const newUser = await userRepository.createUser(userData);
