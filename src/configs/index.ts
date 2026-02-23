@@ -1,7 +1,6 @@
 import detenv from 'dotenv';
 detenv.config();
 
-// Application level constants and config
 export const PORT: number = process.env.PORT ? parseInt(process.env.PORT) : 5050;
 
 export const MONGODB_URL: string =
