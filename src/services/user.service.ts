@@ -14,7 +14,6 @@ export class UserService{
         throw new Error("Method not implemented.");
     }
     async registerUser(userData: CreateUserDto){
-        // bussiness logic =, e.g chech if user exits, hash password, etc
        const checkEmail = await userRepository.getUserByEmail(userData.email);
         if(checkEmail){
             throw new HttpError(409, "email already in use");
@@ -34,12 +33,12 @@ export class UserService{
     if(!validPassword){
         throw new HttpError(401, "invalid credentials")
     }
-    const payload = { // what to store in token
+    const payload = { 
         id: user._id,
         email: user.email,
         role: user.role
         }
-        const token = jwt.sign(payload, JWT_SECRET, {expiresIn: "30d"}); //30 DAYS
+        const token = jwt.sign(payload, JWT_SECRET, {expiresIn: "30d"}); 
         return {token, user}
 }
 async updateUser(userId: string, 
