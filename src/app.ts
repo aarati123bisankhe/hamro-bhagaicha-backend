@@ -1,18 +1,15 @@
+import 'dotenv/config';
 import express, { Application,Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import {PORT} from './configs';
 import {connectDb} from './database/mangodb';
 import cors from 'cors';
 
-import dotenv from 'dotenv';
-
 import authRoutes from './routes/auth.route';
 import adminUserRoutes from './routes/admin/user.route';
 import smsRoutes from './routes/sms.route';
 import path from 'path';
 import { HttpError } from './errors/http-error';
-
-dotenv.config();
 console.log(process.env.PORT);
 
 const app:Application = express();
