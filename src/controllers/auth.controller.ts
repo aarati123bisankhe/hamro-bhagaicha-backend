@@ -35,7 +35,7 @@ export class AuthController{
             }
             const {token, user} = await userService.loginUser(parsedData.data);
             return res.status(200).json(
-                {success: true, messsage: "login successfull", data:user, token}
+                {success: true, message: "login successfull", data:user, token}
             )
         }catch (error: Error | any) {
             return res.status(error.statusCode || 500).json(

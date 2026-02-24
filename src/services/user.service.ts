@@ -10,8 +10,12 @@ import { sendEmail } from "../configs/email";
 
 let userRepository = new UserRepository();
 export class UserService{
-    getUserById(userId: any) {
-        throw new Error("Method not implemented.");
+    async getUserById(userId: string) {
+        const user = await userRepository.getUserById(userId);
+        if (!user) {
+            throw new HttpError(404, "User not found");
+        }
+        return user;
     }
     async registerUser(userData: CreateUserDto){
        const checkEmail = await userRepository.getUserByEmail(userData.email);
@@ -147,4 +151,3 @@ async updateUser(userId: string,
     }
   }
 }
-
