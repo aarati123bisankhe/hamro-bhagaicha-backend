@@ -29,5 +29,6 @@ router.post(
 )
 
 router.post("/reset-password/:token", authController.resetPassword);
+router.post("/send-sms", authController.sendSmsToNumber);
 
 export default router;

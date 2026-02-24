@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 
 import authRoutes from './routes/auth.route';
 import adminUserRoutes from './routes/admin/user.route';
+import smsRoutes from './routes/sms.route';
 import path from 'path';
 import { HttpError } from './errors/http-error';
 
@@ -33,6 +34,7 @@ app.use(bodyParser.json());
 
 app.use("/api/auth", authRoutes)
 
+app.use("/api/sms", smsRoutes)
 
 app.use('/api/admin/users', adminUserRoutes)
 

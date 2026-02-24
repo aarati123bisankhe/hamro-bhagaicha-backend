@@ -1,7 +1,8 @@
 import { Request,Response } from "express";
 import { UserService } from "../services/user.service";
-import { CreateUserDto, LoginUserDto, UpdateUserDto } from "../dtos/user.dto";
+import { CreateUserDto, LoginUserDto, SendSmsDto, UpdateUserDto } from "../dtos/user.dto";
 import z, {success} from "zod";
+import { sendSms } from "../configs/sms";
 
 let userService = new UserService();
 export class AuthController{
@@ -138,5 +139,26 @@ export class AuthController{
             );
         }
     }
-}
 
+    async sendSmsToNumber(req: Request, res: Response) {
+        try {
+            const parsedData = SendSmsDto.safeParse(req.body);
+            if (!parsedData.success) {
+                return res.status(400).json(
+                    { success: false, message: z.prettifyError(parsedData.error) }
+                );
+            }
+
+            const smsResult = await sendSms(parsedData.data);
+            return res.status(200).json({
+                success: true,
+                message: "SMS sent successfully",
+                data: smsResult,
+            });
+        } catch (error: Error | any) {
+            return res.status(error.statusCode || 500).json(
+                { success: false, message: error.message || "Internal Server Error" }
+            );
+        }
+    }
+}
