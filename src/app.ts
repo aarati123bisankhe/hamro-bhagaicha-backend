@@ -8,6 +8,7 @@ import cors from 'cors';
 import authRoutes from './routes/auth.route';
 import adminUserRoutes from './routes/admin/user.route';
 import smsRoutes from './routes/sms.route';
+import nurseryRoutes from "./routes/nursery.route";
 import path from 'path';
 import { HttpError } from './errors/http-error';
 console.log(process.env.PORT);
@@ -34,6 +35,8 @@ app.use("/api/auth", authRoutes)
 app.use("/api/sms", smsRoutes)
 
 app.use('/api/admin/users', adminUserRoutes)
+
+app.use("/api/nurseries", nurseryRoutes);
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello, World!');
