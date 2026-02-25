@@ -15,7 +15,6 @@ router.get("/whoami", authorizedMiddleware,authController.getUserById)
 router.put(
     "/update-profile",
     authorizedMiddleware,
-    // uploads.single("profileUrl"),
     uploads.fields([
         { name: "profileUrl", maxCount: 1 },
     ]),
