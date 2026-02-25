@@ -23,7 +23,7 @@ export class UserService{
             throw new HttpError(409, "email already in use");
         }
         const hashedPassword = await bcryptjs.hash(userData.password, 10);
-        userData.password = hashedPassword; //replace with hased password
+        userData.password = hashedPassword;
         const newUser = await userRepository.createUser(userData);
         return newUser;
         
