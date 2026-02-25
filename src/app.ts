@@ -10,6 +10,7 @@ import adminUserRoutes from './routes/admin/user.route';
 import smsRoutes from './routes/sms.route';
 import checkoutRoutes from './routes/checkout.route';
 import nurseryRoutes from "./routes/nursery.route";
+import productRoutes from "./routes/product.route";
 import path from 'path';
 import { HttpError } from './errors/http-error';
 console.log(process.env.PORT);
@@ -39,6 +40,7 @@ app.use("/api/checkout", checkoutRoutes)
 app.use('/api/admin/users', adminUserRoutes)
 
 app.use("/api/nurseries", nurseryRoutes);
+app.use("/api/seller/products", productRoutes);
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello, World!');
