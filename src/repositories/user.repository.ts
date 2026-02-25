@@ -62,11 +62,6 @@ export class UserRepository implements IUserRepository {
     };
   }
 
-  //  async getUserByUsername(username: string): Promise<IUser | null> {
-  //       const user = await UserModel.findOne({"username": username});
-  //       return user;
-  //   }
-
   async updateUser(
     userId: string,
     updateData: Partial<IUser>
