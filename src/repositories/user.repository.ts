@@ -16,7 +16,6 @@ export interface PaginatedUsersResponse {
 
 export interface IUserRepository {
   getUserByEmail(email: string): Promise<IUser | null>;
-  //  getUserByUsername(username: string): Promise<IUser | null>;
 
   // Common database methods
   createUser(userData: Partial<IUser>): Promise<IUser>;
