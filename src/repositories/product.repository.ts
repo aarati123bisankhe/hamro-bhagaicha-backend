@@ -61,7 +61,18 @@ class ProductRepository {
       return searchable.includes(search);
     });
   }
+
+  async deleteById(productId: string): Promise<boolean> {
+    const products = await this.readAll();
+    const next = products.filter(
+      (p) => String((p as any).id ?? (p as any)._id) !== String(productId)
+    );
+    const deleted = next.length !== products.length;
+    if (deleted) {
+      await this.writeAll(next);
+    }
+    return deleted;
+  }
 }
 
 export const productRepository = new ProductRepository();
-

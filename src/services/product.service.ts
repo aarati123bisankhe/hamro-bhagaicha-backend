@@ -29,5 +29,8 @@ export class ProductService {
       search: query.search,
     });
   }
-}
 
+  async deleteProduct(productId: string): Promise<boolean> {
+    return productRepository.deleteById(productId);
+  }
+}

@@ -55,5 +55,27 @@ export class ProductController {
       });
     }
   }
-}
 
+  async deleteProduct(req: Request, res: Response) {
+    try {
+      const productId = req.params.productId;
+      const deleted = await productService.deleteProduct(productId);
+
+      if (!deleted) {
+        return res
+          .status(404)
+          .json({ success: false, message: "Product not found" });
+      }
+
+      return res.json({
+        success: true,
+        message: "Product deleted successfully",
+      });
+    } catch (error: Error | any) {
+      return res.status(error.statusCode || 500).json({
+        success: false,
+        message: error.message || "Internal Server Error",
+      });
+    }
+  }
+}
