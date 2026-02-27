@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../configs";
 import path from "path";
 import fs from "fs";
+import crypto from "crypto";
 import { sendEmail } from "../configs/email";
 
 let userRepository = new UserRepository();
@@ -98,23 +99,35 @@ async updateUser(userId: string,
 
         // Generate JWT token valid for 1 hour
         const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "1h" });
-
-        let resetBaseUrl: string;
+        const encodedToken = encodeURIComponent(token);
 
         if (platform === "mobile") {
-            // For Flutter/app links, allow explicit resetUrl from client first.
-            resetBaseUrl =
-            resetUrl ||
-            process.env.MOBILE_RESET_URL ||
-            `${process.env.CLIENT_URL || "http://localhost:3000"}/reset-password`;
-        } else {
-            // Web link stays the same
-            const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
-            resetBaseUrl = `${CLIENT_URL}/reset-password`;
+            const code = Math.floor(100000 + Math.random() * 900000).toString();
+            const codeHash = crypto.createHash("sha256").update(code).digest("hex");
+            const codeExpiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+            await userRepository.updateUser(user._id.toString(), {
+                resetPasswordCodeHash: codeHash,
+                resetPasswordCodeExpiresAt: codeExpiresAt,
+                resetPasswordCodeAttempts: 0,
+            } as any);
+
+            const html = `
+                <p>Your password reset code is:</p>
+                <h2>${code}</h2>
+                <p>This code expires in 10 minutes.</p>
+            `;
+
+            const text = `Your password reset code is: ${code}. This code expires in 10 minutes.`;
+
+            await sendEmail(user.email, "Password Reset", html, text);
+            return user;
         }
 
-        const separator = resetBaseUrl.includes("?") ? "&" : "?";
-        const resetLink = `${resetBaseUrl}${separator}token=${encodeURIComponent(token)}`;
+        const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
+        const webBase = resetUrl || process.env.WEB_RESET_URL || `${CLIENT_URL}/reset-password`;
+        const separator = webBase.includes("?") ? "&" : "?";
+        const resetLink = `${webBase}${separator}token=${encodedToken}`;
 
         const html = `
             <p>Click "<a href="${resetLink}">${resetLink}</a>" to reset your password.</p>
@@ -128,6 +141,54 @@ async updateUser(userId: string,
         await sendEmail(user.email, "Password Reset", html, text);
         return user;
     }
+
+  async resetPasswordWithCode(email?: string, code?: string, newPassword?: string) {
+    if (!email || !code || !newPassword) {
+      throw new HttpError(400, "Email, code and new password are required");
+    }
+
+    const user = await userRepository.getUserByEmail(email);
+    if (!user) throw new HttpError(404, "User not found");
+
+    const codeHash = (user as any).resetPasswordCodeHash as string | undefined;
+    const codeExpiresAt = (user as any).resetPasswordCodeExpiresAt as Date | undefined;
+    const attempts = Number((user as any).resetPasswordCodeAttempts || 0);
+
+    if (!codeHash || !codeExpiresAt) {
+      throw new HttpError(400, "Reset code is invalid or expired");
+    }
+
+    if (attempts >= 5) {
+      throw new HttpError(429, "Too many invalid attempts. Request a new code");
+    }
+
+    if (new Date(codeExpiresAt).getTime() < Date.now()) {
+      await userRepository.updateUser(user._id.toString(), {
+        resetPasswordCodeHash: null,
+        resetPasswordCodeExpiresAt: null,
+        resetPasswordCodeAttempts: 0,
+      } as any);
+      throw new HttpError(400, "Reset code is invalid or expired");
+    }
+
+    const submittedCodeHash = crypto.createHash("sha256").update(code).digest("hex");
+    if (submittedCodeHash !== codeHash) {
+      await userRepository.updateUser(user._id.toString(), {
+        resetPasswordCodeAttempts: attempts + 1,
+      } as any);
+      throw new HttpError(400, "Invalid reset code");
+    }
+
+    const hashedPassword = await bcryptjs.hash(newPassword, 10);
+    await userRepository.updateUser(user._id.toString(), {
+      password: hashedPassword,
+      resetPasswordCodeHash: null,
+      resetPasswordCodeExpiresAt: null,
+      resetPasswordCodeAttempts: 0,
+    } as any);
+
+    return user;
+  }
 
 
   /**

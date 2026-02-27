@@ -8,7 +8,9 @@ export const UserSchema = z.object({
     phoneNumber: z.string().min(10, "Phone number is required"),
     role: z.enum(["user","admin"]).default('user'),
     profileUrl: z.string().optional(),
+    resetPasswordCodeHash: z.string().nullable().optional(),
+    resetPasswordCodeExpiresAt: z.date().nullable().optional(),
+    resetPasswordCodeAttempts: z.number().optional(),
 })
 
 export type UserType = z.infer<typeof UserSchema>;
-

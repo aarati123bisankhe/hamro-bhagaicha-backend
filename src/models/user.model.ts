@@ -10,6 +10,9 @@ const userMongoSchema: Schema = new Schema(
     phoneNumber: { type: String, required: true },
     profileUrl: {type: String, required: false}, 
     role: { type: String, enum: ["user", "admin"], default: "user" },
+    resetPasswordCodeHash: { type: String, required: false, default: null },
+    resetPasswordCodeExpiresAt: { type: Date, required: false, default: null },
+    resetPasswordCodeAttempts: { type: Number, required: false, default: 0 },
   },
   { timestamps: true }
 );

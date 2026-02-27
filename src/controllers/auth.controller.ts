@@ -122,6 +122,30 @@ export class AuthController{
         }
     }
 
+    async openResetLink(req: Request, res: Response) {
+        const token = String(req.query.token || "");
+        if (!token) {
+            return res.status(400).send("Invalid reset link");
+        }
+
+        const appBase = process.env.MOBILE_APP_SCHEME || "hamrobhagaicha://reset-password";
+        const separator = appBase.includes("?") ? "&" : "?";
+        const appLink = `${appBase}${separator}token=${encodeURIComponent(token)}`;
+
+        return res.status(200).send(`
+    <!doctype html>
+    <html>
+      <body style="font-family: sans-serif; padding: 24px;">
+        <p>Opening app...</p>
+        <p><a href="${appLink}">Tap here if it does not open automatically</a></p>
+        <script>
+          window.location.href = "${appLink}";
+        </script>
+      </body>
+    </html>
+  `);
+    }
+
 
 
     async resetPassword(req: Request, res: Response) {
@@ -130,6 +154,20 @@ export class AuthController{
            const token = req.params.token;
             const { newPassword } = req.body;
             await userService.resetPassword(token, newPassword);
+            return res.status(200).json(
+                { success: true, message: "Password has been reset successfully." }
+            );
+        } catch (error: Error | any) {
+            return res.status(error.statusCode ?? 500).json(
+                { success: false, message: error.message || "Internal Server Error" }
+            );
+        }
+    }
+
+    async resetPasswordWithCode(req: Request, res: Response) {
+        try {
+            const { email, code, newPassword } = req.body;
+            await userService.resetPasswordWithCode(email, code, newPassword);
             return res.status(200).json(
                 { success: true, message: "Password has been reset successfully." }
             );
