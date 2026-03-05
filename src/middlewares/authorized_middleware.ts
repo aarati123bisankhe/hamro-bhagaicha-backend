@@ -29,7 +29,7 @@ export const authorizedMiddleware =
             } // make function async
             const user = await userRepository.getUserById(decodedToken.id);
             if(!user) throw new HttpError(401, 'Unauthorized user not found');
-            req.user = user; // attach user to request (like tag)
+            req.user = user;
             next();
         }catch(err: Error | any){
             return res.status(err.statusCode || 500).json(
