@@ -7,6 +7,9 @@
   "scripts": {
     "dev": "nodemon --exec ts-node src/index.ts",
     "test": "jest --verbose --detectOpenHandles",
+    "test:unit": "jest --verbose --detectOpenHandles src/__tests__/unit",
+    "test:integration": "RUN_INTEGRATION=true jest --verbose --detectOpenHandles src/__tests__/integration",
+    "test:all": "RUN_INTEGRATION=true jest --verbose --detectOpenHandles",
     "build": "tsc",
     "start": "node dist/index.js"
   },

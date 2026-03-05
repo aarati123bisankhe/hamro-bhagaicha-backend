@@ -1,12 +1,14 @@
 import { connectDb } from "../database/mangodb";
 import mongoose from "mongoose";
 
-// before all test starts
 beforeAll(async () => {
-    await connectDb();
+    if (process.env.RUN_INTEGRATION === "true" && process.env.MONGODB_URL) {
+        await connectDb();
+    }
 });
 
-// after all tests are done
 afterAll(async () => {
-    await mongoose.connection.close();
+    if (mongoose.connection.readyState !== 0) {
+        await mongoose.connection.close();
+    }
 });
