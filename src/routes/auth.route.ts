@@ -30,6 +30,6 @@ router.post(
 router.get("/open-reset", authController.openResetLink);
 router.post("/reset-password/:token", authController.resetPassword);
 router.post("/reset-password-with-code", authController.resetPasswordWithCode);
-router.post("/send-sms", authController.sendSmsToNumber); //sms
+router.post("/send-sms", authController.sendSmsToNumber); 
 
 export default router;
