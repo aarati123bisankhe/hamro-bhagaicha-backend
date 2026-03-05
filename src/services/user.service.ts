@@ -124,8 +124,19 @@ async updateUser(userId: string,
             return user;
         }
 
-        const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
-        const webBase = resetUrl || process.env.WEB_RESET_URL || `${CLIENT_URL}/reset-password`;
+        const normalizeUrl = (value?: string) => value?.trim().replace(/^['"]|['"]$/g, "");
+        const isPlaceholderUrl = (value?: string) =>
+            !value || value.includes("YOUR_WEB_DOMAIN") || value.includes("YOUR_API_DOMAIN");
+
+        const clientUrl = normalizeUrl(process.env.CLIENT_URL) || "http://localhost:3000";
+        const requestResetUrl = normalizeUrl(resetUrl);
+        const envResetUrl = normalizeUrl(process.env.WEB_RESET_URL);
+
+        const webBase = !isPlaceholderUrl(requestResetUrl)
+            ? requestResetUrl!
+            : !isPlaceholderUrl(envResetUrl)
+                ? envResetUrl!
+                : `${clientUrl.replace(/\/+$/, "")}/reset-password`;
         const separator = webBase.includes("?") ? "&" : "?";
         const resetLink = `${webBase}${separator}token=${encodedToken}`;
 
