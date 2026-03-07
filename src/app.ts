@@ -8,6 +8,7 @@ import cors from 'cors';
 import authRoutes from './routes/auth.route';
 import adminUserRoutes from './routes/admin/user.route';
 import smsRoutes from './routes/sms.route';
+import emailRoutes from './routes/email.route';
 import checkoutRoutes from './routes/checkout.route';
 import nurseryRoutes from "./routes/nursery.route";
 import productRoutes from "./routes/product.route";
@@ -35,6 +36,7 @@ app.use(bodyParser.json());
 app.use("/api/auth", authRoutes)
 
 app.use("/api/sms", smsRoutes)
+app.use("/api/email", emailRoutes)
 app.use("/api/checkout", checkoutRoutes)
 
 app.use('/api/admin/users', adminUserRoutes)
